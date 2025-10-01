@@ -177,7 +177,7 @@ body.menu-open {
     position: relative;
     z-index: 2;
     max-width: 800px;
-    padding: 0 20px;
+    padding: 0 10px;
 }
 
 .hero-title {
@@ -192,7 +192,7 @@ body.menu-open {
 }
 
 .hero-subtitle {
-    font-size: 2.5rem;
+    font-size: 2.0rem;
     font-weight: 600;
     color: #ffd700;
     margin-bottom: 1.5rem;
@@ -200,8 +200,8 @@ body.menu-open {
 }
 
 .hero-description {
-    font-size: 1.2rem;
-    margin-bottom: 2.5rem;
+    font-size: 1.1rem;
+    margin-bottom: 2.2rem;
     color: #e6edf3;
     max-width: 600px;
     margin-left: auto;
@@ -210,7 +210,7 @@ body.menu-open {
 
 .cta-button {
     display: inline-block;
-    padding: 15px 40px;
+    padding: 10px 40px;
     background: linear-gradient(45deg, #ffd700, #ffb84d);
     color: #000000;
     text-decoration: none;
