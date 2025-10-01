@@ -71,6 +71,26 @@ h1, h2, h3, h4, p, a, li, .nav-link, .hero-title, .hero-subtitle, .section-title
     color: #ffd700;
 }
 
+.logo-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+.logo-text span {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffd700;
+}
+
+.logo-text small {
+    font-size: 0.7rem;
+    font-weight: 400;
+    color: #e6edf3;
+    margin-top: -2px;
+    white-space: nowrap;
+}
+
 .logo-img {
     height: 40px;
     width: auto;
@@ -897,6 +917,14 @@ section {
 
     /* Navbar adjustments */
     .logo-img { height: 32px; }
+    
+    .logo-text span {
+        font-size: 1.2rem;
+    }
+    
+    .logo-text small {
+        font-size: 0.6rem;
+    }
 
     /* Make hero CTA full-width */
     .cta-button { display: block; width: 100%; max-width: 480px; margin: 0 auto; }
