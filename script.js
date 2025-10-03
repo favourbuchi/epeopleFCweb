@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initSmoothScrolling();
     initAnimations();
     initCarousel();
+    initSchoolRequestForm();
 });
 
 // Navigation functionality
@@ -384,6 +385,97 @@ function initAnimations() {
     });
 }
 
+// School request form functionality
+function initSchoolRequestForm() {
+    const schoolForm = document.getElementById('schoolRequestForm');
+    const schoolInput = document.getElementById('schoolName');
+    const schoolSubmitButton = schoolForm ? schoolForm.querySelector('.school-submit-button') : null;
+    const schoolSuccessMessage = document.getElementById('schoolSuccessMessage');
+    const schoolErrorMessage = document.getElementById('schoolNameError');
+    
+    if (schoolForm && schoolInput && schoolSubmitButton && schoolSuccessMessage && schoolErrorMessage) {
+        schoolForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Clear previous error message
+            schoolErrorMessage.textContent = '';
+            schoolErrorMessage.style.display = 'none';
+            
+            // Get and validate the school name
+            const schoolName = schoolInput.value.trim();
+            
+            if (schoolName === '') {
+                schoolErrorMessage.textContent = 'Please enter a school name.';
+                schoolErrorMessage.style.display = 'block';
+                schoolInput.focus();
+                // Add error styling to input
+                schoolInput.style.borderColor = '#ff6b6b';
+                schoolInput.style.boxShadow = '0 0 10px rgba(255, 107, 107, 0.3)';
+                return;
+            }
+            
+            if (schoolName.length < 2) {
+                schoolErrorMessage.textContent = 'School name must be at least 2 characters long.';
+                schoolErrorMessage.style.display = 'block';
+                schoolInput.focus();
+                // Add error styling to input
+                schoolInput.style.borderColor = '#ff6b6b';
+                schoolInput.style.boxShadow = '0 0 10px rgba(255, 107, 107, 0.3)';
+                return;
+            }
+            
+            // Clear any error styling
+            schoolInput.style.borderColor = 'rgba(255, 215, 0, 0.3)';
+            schoolInput.style.boxShadow = 'none';
+            
+            // Disable form and show loading state
+            schoolSubmitButton.disabled = true;
+            schoolSubmitButton.textContent = 'Sending...';
+            schoolInput.disabled = true;
+            
+            // Simulate form submission (replace with actual submission logic)
+            setTimeout(() => {
+                // Hide the form and show success message
+                schoolForm.style.display = 'none';
+                schoolSuccessMessage.style.display = 'block';
+                
+                // Optional: Log the school name for backend processing
+                console.log('School request submitted for:', schoolName);
+                
+                // Reset form after a delay
+                setTimeout(() => {
+                    schoolForm.style.display = 'flex';
+                    schoolSuccessMessage.style.display = 'none';
+                    schoolInput.value = '';
+                    schoolInput.disabled = false;
+                    schoolSubmitButton.disabled = false;
+                    schoolSubmitButton.textContent = 'Send Request';
+                }, 5000); // Reset after 5 seconds
+            }, 1000); // Simulate 1 second processing time
+        });
+        
+        // Clear error message and styling when user starts typing
+        schoolInput.addEventListener('input', () => {
+            if (schoolErrorMessage.style.display === 'block') {
+                schoolErrorMessage.textContent = '';
+                schoolErrorMessage.style.display = 'none';
+                // Clear error styling
+                schoolInput.style.borderColor = 'rgba(255, 215, 0, 0.3)';
+                schoolInput.style.boxShadow = 'none';
+            }
+        });
+        
+        // Handle focus events for better UX
+        schoolInput.addEventListener('focus', () => {
+            if (schoolErrorMessage.style.display === 'block') {
+                // Clear error styling on focus
+                schoolInput.style.borderColor = '#ffd700';
+                schoolInput.style.boxShadow = '0 0 20px rgba(255, 215, 0, 0.3)';
+            }
+        });
+    }
+}
+
 // Add some interactive features
 document.addEventListener('DOMContentLoaded', function() {
     // Parallax effect for hero section
@@ -484,108 +576,159 @@ const debouncedScrollHandler = debounce(function() {
 
 window.addEventListener('scroll', debouncedScrollHandler);
 
-// Carousel functionality
+// Season Carousels functionality
 function initCarousel() {
-    const carouselContainer = document.querySelector('.carousel-container');
-    if (!carouselContainer) return;
+    const seasonCarousels = document.querySelectorAll('.season-carousel-container');
     
-    const track = document.querySelector('.carousel-track');
-    const prevBtn = document.querySelector('.carousel-prev');
-    const nextBtn = document.querySelector('.carousel-next');
-    const indicators = document.querySelectorAll('.indicator');
-    const items = document.querySelectorAll('.carousel-item');
-    
-    let currentSlide = 0;
-    const totalSlides = items.length;
-    
-    function updateCarousel() {
-        const slideWidth = 100;
-        track.style.transform = `translateX(-${currentSlide * slideWidth}%)`;
+    seasonCarousels.forEach(container => {
+        const season = container.getAttribute('data-season');
+        const track = container.querySelector('.season-carousel-track');
+        const prevBtn = container.querySelector('.season-carousel-prev');
+        const nextBtn = container.querySelector('.season-carousel-next');
+        const indicators = container.querySelectorAll('.season-indicator');
+        const items = container.querySelectorAll('.season-carousel-item');
         
-        // Update indicators
+        let currentSlide = 0;
+        const totalSlides = items.length;
+        let autoPlayInterval;
+        
+        function updateCarousel() {
+            // Hide all items
+            items.forEach(item => item.classList.remove('active'));
+            // Show current item
+            if (items[currentSlide]) {
+                items[currentSlide].classList.add('active');
+            }
+            
+            // Update track position
+            const slideWidth = 100;
+            track.style.transform = `translateX(-${currentSlide * slideWidth}%)`;
+            
+            // Update indicators
+            indicators.forEach((indicator, index) => {
+                indicator.classList.toggle('active', index === currentSlide);
+            });
+        }
+        
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            updateCarousel();
+        }
+        
+        function prevSlide() {
+            currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+            updateCarousel();
+        }
+        
+        function goToSlide(slideIndex) {
+            currentSlide = slideIndex;
+            updateCarousel();
+        }
+        
+        function startAutoPlay() {
+            autoPlayInterval = setInterval(nextSlide, 5000);
+        }
+        
+        function stopAutoPlay() {
+            clearInterval(autoPlayInterval);
+        }
+        
+        // Event listeners
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => {
+                stopAutoPlay();
+                nextSlide();
+                startAutoPlay();
+            });
+        }
+        
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => {
+                stopAutoPlay();
+                prevSlide();
+                startAutoPlay();
+            });
+        }
+        
+        // Indicator clicks
         indicators.forEach((indicator, index) => {
-            indicator.classList.toggle('active', index === currentSlide);
+            indicator.addEventListener('click', () => {
+                stopAutoPlay();
+                goToSlide(index);
+                startAutoPlay();
+            });
         });
-    }
-    
-    function nextSlide() {
-        currentSlide = (currentSlide + 1) % totalSlides;
-        updateCarousel();
-    }
-    
-    function prevSlide() {
-        currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-        updateCarousel();
-    }
-    
-    function goToSlide(slideIndex) {
-        currentSlide = slideIndex;
-        updateCarousel();
-    }
-    
-    // Event listeners
-    if (nextBtn) nextBtn.addEventListener('click', nextSlide);
-    if (prevBtn) prevBtn.addEventListener('click', prevSlide);
-    
-    // Indicator clicks
-    indicators.forEach((indicator, index) => {
-        indicator.addEventListener('click', () => goToSlide(index));
-    });
-    
-    // Auto-play carousel
-    let autoPlayInterval = setInterval(nextSlide, 5000);
-    
-    // Pause auto-play on hover
-    carouselContainer.addEventListener('mouseenter', () => {
-        clearInterval(autoPlayInterval);
-    });
-    
-    carouselContainer.addEventListener('mouseleave', () => {
-        autoPlayInterval = setInterval(nextSlide, 5000);
-    });
-    
-    // Touch/swipe support for mobile
-    let startX = 0;
-    let startY = 0;
-    let distX = 0;
-    let distY = 0;
-    
-    carouselContainer.addEventListener('touchstart', function(e) {
-        startX = e.touches[0].clientX;
-        startY = e.touches[0].clientY;
-    });
-    
-    carouselContainer.addEventListener('touchmove', function(e) {
-        e.preventDefault();
-    });
-    
-    carouselContainer.addEventListener('touchend', function(e) {
-        distX = e.changedTouches[0].clientX - startX;
-        distY = e.changedTouches[0].clientY - startY;
         
-        // Check if horizontal swipe is greater than vertical
-        if (Math.abs(distX) > Math.abs(distY)) {
-            if (distX > 50) {
-                prevSlide(); // Swipe right
-            } else if (distX < -50) {
-                nextSlide(); // Swipe left
+        // Pause auto-play on hover
+        container.addEventListener('mouseenter', stopAutoPlay);
+        container.addEventListener('mouseleave', startAutoPlay);
+        
+        // Touch/swipe support for mobile
+        let startX = 0;
+        let startY = 0;
+        let distX = 0;
+        let distY = 0;
+        
+        container.addEventListener('touchstart', function(e) {
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+            stopAutoPlay();
+        });
+        
+        container.addEventListener('touchmove', function(e) {
+            e.preventDefault();
+        });
+        
+        container.addEventListener('touchend', function(e) {
+            distX = e.changedTouches[0].clientX - startX;
+            distY = e.changedTouches[0].clientY - startY;
+            
+            // Check if horizontal swipe is greater than vertical
+            if (Math.abs(distX) > Math.abs(distY)) {
+                if (distX > 50) {
+                    prevSlide(); // Swipe right
+                } else if (distX < -50) {
+                    nextSlide(); // Swipe left
+                }
+            }
+            startAutoPlay();
+        });
+        
+        // Initialize carousel
+        updateCarousel();
+        startAutoPlay();
+    });
+    
+    // Global keyboard navigation for focused carousel
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+            // Find the carousel that's currently in view
+            const viewportHeight = window.innerHeight;
+            const highlightsSection = document.getElementById('highlights');
+            
+            if (highlightsSection) {
+                const rect = highlightsSection.getBoundingClientRect();
+                const isInView = rect.top < viewportHeight && rect.bottom > 0;
+                
+                if (isInView) {
+                    // Get the first visible carousel
+                    const visibleCarousel = highlightsSection.querySelector('.season-carousel-container');
+                    if (visibleCarousel) {
+                        const prevBtn = visibleCarousel.querySelector('.season-carousel-prev');
+                        const nextBtn = visibleCarousel.querySelector('.season-carousel-next');
+                        
+                        if (e.key === 'ArrowLeft' && prevBtn) {
+                            prevBtn.click();
+                        } else if (e.key === 'ArrowRight' && nextBtn) {
+                            nextBtn.click();
+                        }
+                    }
+                }
             }
         }
     });
-    
-    // Keyboard navigation
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'ArrowLeft') {
-            prevSlide();
-        } else if (e.key === 'ArrowRight') {
-            nextSlide();
-        }
-    });
-    
-    // Initialize first slide
-    updateCarousel();
 }
 
 // Console welcome message
-console.log('%c🎮 epeople FC Season 2 🎮', 'color: #ffd700; font-size: 20px; font-weight: bold;');
-console.log('%cWelcome to the ultimate FIFA gaming experience with epeople FC!', 'color: #ffd700; font-size: 14px;');
+console.log('%c🎮 ePeople Games FC26 Season 3 🎮', 'color: #ffd700; font-size: 20px; font-weight: bold;');
+console.log('%cWelcome to the ultimate FIFA gaming experience with ePeople Games!', 'color: #ffd700; font-size: 14px;');
