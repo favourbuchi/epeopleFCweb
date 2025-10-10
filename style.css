@@ -376,6 +376,34 @@ section {
     font-weight: 500;
 }
 
+/* Tournament Hero Image */
+.tournament-hero-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 3rem auto 4rem;
+    max-width: 1000px;
+    position: relative;
+    z-index: 1;
+}
+
+.tournament-graphics {
+    width: 100%;
+    max-width: 800px;
+    height: auto;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(255, 215, 0, 0.3);
+    border: 2px solid rgba(255, 215, 0, 0.4);
+    transition: all 0.3s ease;
+    object-fit: cover;
+}
+
+.tournament-graphics:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 25px 60px rgba(255, 215, 0, 0.4);
+    border-color: rgba(255, 215, 0, 0.6);
+}
+
 .tournament-content {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -554,11 +582,38 @@ section {
     margin-bottom: 0;
 }
 
+/* Biller One Logo Styling */
+.biller-logo {
+    width: 60px;
+    height: 30px;
+    object-fit: contain;
+    margin-bottom: 0.5rem;
+    border-radius: 4px;
+}
+
 .fee-details {
     background: rgba(0, 0, 0, 0.3);
     padding: 1.5rem;
     border-radius: 10px;
     border-left: 4px solid #ffd700;
+}
+
+.fee-details-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.biller-logo-details {
+    width: 50px;
+    height: 25px;
+    object-fit: contain;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+.fee-details-text {
+    flex: 1;
 }
 
 .fee-details p {
@@ -729,6 +784,18 @@ section {
         font-size: 1.1rem;
     }
     
+    /* Tournament hero image mobile adjustments */
+    .tournament-hero-image {
+        margin: 2rem auto 3rem;
+        max-width: 95%;
+    }
+    
+    .tournament-graphics {
+        max-width: 100%;
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(255, 215, 0, 0.3);
+    }
+    
     .tournament-content {
         grid-template-columns: 1fr;
         gap: 1.5rem;
@@ -750,6 +817,19 @@ section {
     .structure-stages {
         grid-template-columns: 1fr;
         gap: 1rem;
+    }
+    
+    /* Biller One logo mobile adjustments */
+    .fee-details-content {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .biller-logo-details {
+        width: 60px;
+        height: 30px;
     }
     
     .prize-breakdown {
